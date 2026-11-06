@@ -1,0 +1,25 @@
+# Render blueprint: one web service (API + built frontend) and one Postgres database.
+services:
+  - type: web
+    name: recon-desk
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: { name: recon-db, property: connectionString }
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DEMO_PASSWORD       # set in the dashboard; share it with the reviewer in deployment.md
+        sync: false
+      - key: ANTHROPIC_API_KEY   # optional; without it column mapping uses the fuzzy fallback
+        sync: false
+      - key: SEED_ON_START
+        value: "true"
+      - key: SEED_ORDERS
+        value: "10000"
+      - key: CORS_ORIGINS
+        value: ""
+databases:
+  - name: recon-db
+    plan: free
