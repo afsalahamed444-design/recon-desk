@@ -133,8 +133,10 @@ def generate(n: int = 10_000, seed: int = 7, as_of: date | None = None) -> dict[
     # noise: exact duplicate lines and blank order ids
     dup = settlement.sample(frac=0.003, random_state=seed)
     settlement = pd.concat([settlement, dup], ignore_index=True)
-    blank = rng.random(len(settlement)) < 0.003
-    settlement.loc[blank, "order_id"] = ""
+    r = rng.random(len(settlement))
+    settlement.loc[r < 0.001, "order_id"] = ""                                   # unusable row: rejected at load
+    orphan = (r >= 0.001) & (r < 0.004)                                           # id not in orders: unmatched line
+    settlement.loc[orphan, "order_id"] = [f"ORD-X-{900000 + i}" for i in range(int(orphan.sum()))]
 
     # later payouts arrive in a file with a changed format (not loaded at seed time)
     late = settlement["settlement_date"] >= (as_of - pd.Timedelta(days=5))
