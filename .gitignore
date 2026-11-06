@@ -1,0 +1,10 @@
+.env
+*.db
+*.sqlite
+__pycache__/
+.pytest_cache/
+node_modules/
+frontend/dist/
+backend/data/
+.venv/
+*.pyc
