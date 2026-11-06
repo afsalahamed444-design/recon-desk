@@ -2,7 +2,7 @@ import os
 import tempfile
 
 _tmp = tempfile.mkdtemp()
-os.environ.update(DATABASE_URL=f"sqlite:///{_tmp}/test.db", DATA_DIR=_tmp, SEED_ON_START="false",
+os.environ.update(DATABASE_URL=os.environ.get("TEST_DATABASE_URL", f"sqlite:///{_tmp}/test.db"), DATA_DIR=_tmp, SEED_ON_START="false",
                   JWT_SECRET="test-secret-not-for-production", DEMO_PASSWORD="test-pass-123", ANTHROPIC_API_KEY="")
 
 import pytest
